@@ -184,7 +184,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"enum": [
 				ACTIVE,
 				DISABLED,
-				REMOVE
+				REMOVED
 			],
 			"default": ACTIVE
 		},
