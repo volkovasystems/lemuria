@@ -1,0 +1,35 @@
+{
+  "name": "lemuria",
+  "version": "0.0.0",
+  "description": "Standard default model.",
+  "main": "lemuria.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volkovasystems/lemuria.git"
+  },
+  "keywords": [
+    "standard",
+    "default",
+    "model",
+    "lemuria"
+  ],
+  "author": "Richeve S. Bebedor <richeve.bebedor@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/volkovasystems/lemuria/issues"
+  },
+  "homepage": "https://github.com/volkovasystems/lemuria#readme",
+  "dependencies": {
+    "diatom": "^0.2.1",
+    "harden": "^0.3.2",
+    "heredito": "^0.6.0",
+    "llamalize": "^0.1.2",
+    "mongodb": "^2.1.18",
+    "mongoose": "^4.5.1",
+    "olivant": "^0.1.1",
+    "shardize": "^0.2.0"
+  }
+}
