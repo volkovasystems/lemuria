@@ -255,7 +255,11 @@ Lemuria.prototype.buildSchema = function buildSchema( ){
 
 /*;
 	@method-documentation:
-		Attach a plugin
+		Attach a plugin.
+
+		The initialize method is used to do some initialization or configuration to the plugin
+			before attaching it to the schema. If the initialize method returns a non falsy
+			value it will be passed to the plugin method of the schema.
 	@end-method-documentation
 */
 Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
@@ -263,11 +267,12 @@ Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
 		throw new Error( "schema not instantiated" );
 	}
 
+	var result = undefined;
 	if( typeof initialize == "function" ){
-		initialize.call( this );
+		result = initialize.call( this, plugin );
 	}
 
-	this.schema.plugin( plugin );
+	this.schema.plugin( result || plugin );
 
 	return this;
 };
