@@ -83,6 +83,8 @@ var mongoose = require( "mongoose" );
 var olivant = require( "olivant" );
 var shardize = require( "shardize" );
 
+mongoose.Promise = global.Promise = global.Promise || require( "bluebird" );
+
 var EventEmitter = require( "events" ).EventEmitter;
 
 harden( "ACTIVE", "active" );
