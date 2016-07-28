@@ -62,6 +62,7 @@
 
 	@include:
 		{
+			"called": "called",
 			"diatom": "diatom",
 			"harden": "harden",
 			"heredito": "heredito",
@@ -69,7 +70,8 @@
 			"mongodb": "mongodb",
 			"mongoose": "mongoose",
 			"olivant": "olivant",
-			"shardize": "shardize"
+			"shardize": "shardize",
+			"U200b": "u200b"
 		}
 	@end-include
 */
@@ -82,7 +84,13 @@ var mongodb = require( "mongodb" );
 var mongoose = require( "mongoose" );
 var olivant = require( "olivant" );
 var shardize = require( "shardize" );
+var U200b = require( "u200b" );
 
+/*;
+	@notice:
+		This is done because of the deprecation warnings of mongoosejs.
+	@end-notice
+*/
 mongoose.Promise = global.Promise = global.Promise || require( "bluebird" );
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -107,7 +115,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 	this._schema = {
 		//: Fixed identifiable reference
 		"reference": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"required": true,
 			"unique": true,
@@ -116,7 +124,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 
 		//: Changing identifiable reference
 		"hash": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"required": true,
 			"unique": true
@@ -124,29 +132,30 @@ Lemuria.prototype.initialize = function initialize( model ){
 
 		//: Short fixed identifiable reference
 		"stamp": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"required": true,
-			"unique": true
+			"unique": true,
+			"index": true
 		},
 
 		//: name-stamp reference
 		"code": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"unique": true
 		},
 
 		//: 6 character unique short reference
 		"short": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"unique": true
 		},
 
 		//: This is the public path based on the code.
 		"path": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"unique": true,
 			"index": true
@@ -154,33 +163,38 @@ Lemuria.prototype.initialize = function initialize( model ){
 
 		//: The model type of the document.
 		"model": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"default": name
 		},
 
 		//: Searchable name
 		"name": {
-			"type": String,
-			"trim": true
+			"$type": String,
+			"trim": true,
+			"index": true
 		},
 
 		//: Displayable name
 		"title": {
-			"type": String,
-			"trim": true
+			"$type": String,
+			"trim": true,
+			"index": true
 		},
 
 		//: Array of descriptive phrases
 		"description": {
-			"type": [ String ],
+			"$type": [ String ],
 			"trim": true,
-			"default": ""
+			"default": "",
+			"get": function getDescription( description ){
+				return U200b( description ).join( "," );
+			}
 		},
 
 		//: Status of the document.
 		"status": {
-			"type": String,
+			"$type": String,
 			"trim": true,
 			"required": true,
 			"enum": [
@@ -193,10 +207,10 @@ Lemuria.prototype.initialize = function initialize( model ){
 
 		//: Searchable tag references
 		"tag": {
-			"type": [ String ],
+			"$type": [ String ],
 			"trim": true,
-			"index": true,
-			"default": name
+			"default": name,
+			"index": true
 		}
 	};
 
@@ -224,8 +238,56 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 		This will create a new instance of mongoose.Schema.
 	@end-method-documentation
 */
-Lemuria.prototype.buildSchema = function buildSchema( ){
-	this.schema = new mongoose.Schema( this._schema );
+Lemuria.prototype.buildSchema = function buildSchema( option ){
+	option = option || { };
+
+	this.schema = new mongoose.Schema( this._schema, {
+		"collection": option.name || this.name,
+		"autoIndex": false,
+		"typeKey": "$type"
+	} );
+
+	this.schema.methods.describe = function describe( description, callback ){
+		callback = called( callback );
+
+		if( U200b( description ).separate( ).length > 1 ){
+			callback( );
+
+			return this;
+		}
+
+		if( typeof description == "string" ){
+			this.description.addToSet( description );
+		}
+
+		callback( );
+
+		return this;
+	};
+
+	this.schema.methods.tagged = function tagged( tag, callback ){
+		callback = called( callback );
+
+		if( typeof tag == "string" ){
+			this.tag.addToSet( tag );
+		}
+
+		callback( );
+
+		return this;
+	};
+
+	this.schema.pre( "save",
+		function onSave( next ){
+			if( !this.path &&
+				this.model &&
+				this.code )
+			{
+				this.path = "/@model/@code"
+					.replace( "@model", this.model )
+					.replace( "@code", this.code );
+			}
+		} );
 
 	var self = this;
 	this.schema.pre( "save",
@@ -251,6 +313,11 @@ Lemuria.prototype.buildSchema = function buildSchema( ){
 		function onRemoved( data ){
 			self.emit( "removed", data, self );
 		} );
+
+	this.schema.on( "error",
+		( function onError( ){
+			Bug( this.name, arguments, this );
+		} ).bind( this ) );
 
 	return this;
 };
@@ -395,6 +462,17 @@ Lemuria.prototype.buildModel = function buildModel( ){
 	this.model = ( this.database || mongoose ).model( this.title, this.schema );
 
 	return this;
+};
+
+Lemuria.prototype.construct = function construct( data ){
+	var _data = new this.model( data );
+
+	_data.once( "error",
+		( function onError( ){
+			Bug( this.name, arguments, this );
+		} ).bind( this ) );
+
+	return _data;
 };
 
 Lemuria.prototype.deploy = function deploy( ){
