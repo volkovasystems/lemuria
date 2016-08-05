@@ -287,6 +287,8 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 					.replace( "@model", this.model )
 					.replace( "@code", this.code );
 			}
+
+			next( );
 		} );
 
 	var self = this;
