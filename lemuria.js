@@ -69,7 +69,7 @@
 			"llamalize": "llamalize",
 			"mongodb": "mongodb",
 			"mongoose": "mongoose",
-			"olivant": "olivant",
+			"Olivant": "olivant",
 			"shardize": "shardize",
 			"U200b": "u200b"
 		}
@@ -82,7 +82,7 @@ var heredito = require( "heredito" );
 var llamalize = require( "llamalize" );
 var mongodb = require( "mongodb" );
 var mongoose = require( "mongoose" );
-var olivant = require( "olivant" );
+var Olivant = require( "olivant" );
 var shardize = require( "shardize" );
 var U200b = require( "u200b" );
 
