@@ -38,7 +38,7 @@
 			"repository": "https://github.com/volkovasystems/lemuria.git",
 			"test": "lemuria-test.js",
 			"global": true,
-			"class": "true"
+			"class": true
 		}
 	@end-module-configuration
 
@@ -60,10 +60,17 @@
 			.deploy( );
 	@end-example
 
+	@todo:
+		Add support for Redis and MariaDB
+
+		Add support to use Bookshelf.js
+	@end-todo:
+
 	@include:
 		{
 			"called": "called",
 			"diatom": "diatom",
+			"Ethernity": "ethernity",
 			"harden": "harden",
 			"heredito": "heredito",
 			"llamalize": "llamalize",
@@ -77,6 +84,7 @@
 */
 
 var diatom = require( "diatom" );
+var Ethernity = require( "ethernity" );
 var harden = require( "harden" );
 var heredito = require( "heredito" );
 var llamalize = require( "llamalize" );
@@ -93,7 +101,7 @@ var U200b = require( "u200b" );
 */
 mongoose.Promise = global.Promise = global.Promise || require( "bluebird" );
 
-var EventEmitter = require( "events" ).EventEmitter;
+var EventEmitter = require( "events" );
 
 harden( "ACTIVE", "active" );
 harden( "DISABLED", "disabled" );
@@ -211,6 +219,11 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"trim": true,
 			"default": name,
 			"index": true
+		},
+
+		"date": {
+			"$type": [ Number ],
+			"default": Ethernity.now
 		}
 	};
 
