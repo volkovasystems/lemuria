@@ -1,6 +1,6 @@
 {
   "name": "lemuria",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Standard default model.",
   "main": "lemuria.js",
   "scripts": {
@@ -23,17 +23,18 @@
   },
   "homepage": "https://github.com/volkovasystems/lemuria#readme",
   "dependencies": {
-    "bluebird": "^3.4.1",
-    "called": "0.0.5",
-    "diatom": "^0.2.3",
-    "ethernity": "^0.2.1",
-    "harden": "^0.3.2",
-    "heredito": "^0.6.0",
-    "llamalize": "^0.1.2",
-    "mongodb": "^2.1.18",
-    "mongoose": "^4.5.9",
-    "olivant": "^0.6.5",
-    "shardize": "^0.2.0",
-    "u200b": "^0.1.2"
+    "bluebird": "^3.4.6",
+    "called": "^0.1.2",
+    "diatom": "^0.2.4",
+    "doubt": "0.0.4",
+    "ethernity": "^0.2.6",
+    "harden": "^0.3.5",
+    "heredito": "^0.8.0",
+    "llamalize": "^0.2.1",
+    "mongodb": "^2.2.10",
+    "mongoose": "^4.6.1",
+    "olivant": "^0.7.19",
+    "shardize": "^0.3.1",
+    "u200b": "^0.2.3"
   }
 }

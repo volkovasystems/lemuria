@@ -43,6 +43,7 @@
 	@end-module-configuration
 
 	@module-documentation:
+		Standard default model.
 	@end-module-documentation
 
 	@example:
@@ -70,7 +71,9 @@
 		{
 			"called": "called",
 			"diatom": "diatom",
+			"doubt": "doubt",
 			"Ethernity": "ethernity",
+			"EventEmitter": "events",
 			"harden": "harden",
 			"heredito": "heredito",
 			"llamalize": "llamalize",
@@ -83,8 +86,11 @@
 	@end-include
 */
 
+var called = require( "called" );
 var diatom = require( "diatom" );
+var doubt = require( "doubt" );
 var Ethernity = require( "ethernity" );
+var EventEmitter = require( "events" );
 var harden = require( "harden" );
 var heredito = require( "heredito" );
 var llamalize = require( "llamalize" );
@@ -99,17 +105,29 @@ var U200b = require( "u200b" );
 		This is done because of the deprecation warnings of mongoosejs.
 	@end-notice
 */
-mongoose.Promise = global.Promise = global.Promise || require( "bluebird" );
-
-var EventEmitter = require( "events" );
+mongoose.Promise = require( "bluebird" );
 
 harden( "ACTIVE", "active" );
 harden( "DISABLED", "disabled" );
 harden( "REMOVED", "removed" );
+harden( "LOCKED", "locked" );
 
-var Lemuria = diatom( "Lemuria" );
+//: Any access.
+harden( "PUBLIC", "public" );
+//: Shareable, temporarily hidden, ignore security.
+harden( "LIMITED", "limited" );
+//: Shareable, but not visible, ignore security.
+harden( "HIDDEN", "hidden" );
+//: Shareable and secured.
+harden( "RESTRICTED", "restricted" );
+//: Limited sharing and secured.
+harden( "PERMITTED", "permitted" );
+//: Non-shareable and secured.
+harden( "PRIVATE", "private" );
+//: Root access only.
+harden( "LOCKED", "locked" );
 
-heredito( Lemuria, EventEmitter );
+var Lemuria = heredito( diatom( "Lemuria" ), EventEmitter );
 
 harden( "database", Lemuria.database || { }, Lemuria );
 harden( "client", Lemuria.client || { }, Lemuria );
@@ -120,7 +138,16 @@ Lemuria.prototype.initialize = function initialize( model ){
 
 	this.title = llamalize( model, true );
 
-	this._schema = {
+	harden( "scope", { }, this );
+	harden( "public", { }, this.scope );
+	harden( "limited", { }, this.scope );
+	harden( "restricted", { }, this.scope );
+	harden( "private", { }, this.scope );
+	harden( "locked", { }, this.scope );
+
+	harden( "factor", { }, this );
+
+	this.structure = {
 		//: Fixed identifiable reference
 		"reference": {
 			"$type": String,
@@ -135,27 +162,48 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"$type": String,
 			"trim": true,
 			"required": true,
-			"unique": true
+			"unique": true,
+			"select": false
 		},
 
 		//: Short fixed identifiable reference
 		"stamp": {
-			"$type": String,
-			"trim": true,
-			"required": true,
-			"unique": true,
-			"index": true
-		},
-
-		//: name-stamp reference
-		"code": {
-			"$type": String,
-			"trim": true,
-			"unique": true
+			"code":{
+				"$type": String,
+				"trim": true,
+				"required": true,
+				"unique": true,
+				"index": true
+			},
+			"setting": {
+				"$type": String,
+				"required": true,
+				"unique": true,
+				"index": true,
+				"select": false
+			}
 		},
 
 		//: 6 character unique short reference
 		"short": {
+			"code":{
+				"$type": String,
+				"trim": true,
+				"required": true,
+				"unique": true,
+				"index": true
+			},
+			"setting": {
+				"$type": String,
+				"required": true,
+				"unique": true,
+				"index": true,
+				"select": false
+			}
+		},
+
+		//: name-stamp reference
+		"code": {
 			"$type": String,
 			"trim": true,
 			"unique": true
@@ -173,7 +221,9 @@ Lemuria.prototype.initialize = function initialize( model ){
 		"model": {
 			"$type": String,
 			"trim": true,
-			"default": name
+			"default": name,
+			"enum": [ name ],
+			"select": false
 		},
 
 		//: Searchable name
@@ -186,8 +236,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 		//: Displayable name
 		"title": {
 			"$type": String,
-			"trim": true,
-			"index": true
+			"trim": true
 		},
 
 		//: Array of descriptive phrases
@@ -208,7 +257,8 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"enum": [
 				ACTIVE,
 				DISABLED,
-				REMOVED
+				REMOVED,
+				LOCKED
 			],
 			"default": ACTIVE
 		},
@@ -218,14 +268,48 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"$type": [ String ],
 			"trim": true,
 			"default": name,
-			"index": true
+			"index": true,
+			"get": function getTag( tag ){
+				return U200b( tag ).join( "," );
+			}
 		},
 
+		//: The date this document is created.
 		"date": {
 			"$type": [ Number ],
-			"default": Ethernity.now
+			"default": Ethernity.now,
+			"get": function getDate( date ){
+				return Ethernity( date ).trueTime;
+			}
+		},
+
+		//: This will be used as the default sorting property.
+		"index": {
+			"$type": Number,
+			"default": function getIndex( ){
+				return Date.now( ) + Math.random( );
+			},
+			"select": false
+		},
+
+		"_id": {
+			"$type": mongoose.Schema.Types.ObjectId,
+			"select": false
+		},
+
+		"__v": {
+			"$type": Number,
+			"select": false
 		}
 	};
+
+	this.addScope( "reference", PERMITTED );
+	this.addScope( "status", RESTRICTED );
+	this.addScope( "date", RESTRICTED );
+
+	this.addFactor( "name" );
+	this.addFactor( "title" );
+	this.addFactor( "model" );
 
 	this.on( "error",
 		( function onError( ){
@@ -241,7 +325,67 @@ Lemuria.prototype.initialize = function initialize( model ){
 	@end-method-documentation
 */
 Lemuria.prototype.addSchema = function addSchema( name, schema ){
-	this._schema[ name ] = schema;
+	this.structure[ name ] = schema;
+
+	if( doubt( schema ).ARRAY &&
+		typeof schema[ 0 ] == "object" &&
+		!doubt( typeof schema[ 0 ].$type ).ARRAY )
+	{
+		this.scope[ LIMITED ][ name ] = true;
+	}
+
+	if( doubt( schema.$type ).ARRAY &&
+		schema.$type[ 0 ] === String )
+	{
+		schema.get = function getElement( data ){
+			return U200b( data ).join( "," );
+		};
+	}
+
+	return this;
+};
+
+Lemuria.prototype.addScope = function addScope( property, type ){
+	if( typeof type == "string" &&
+		type != PUBLIC &&
+		type != LIMITED &&
+		type != HIDDEN &&
+		type != RESTRICTED &&
+		type != PERMITTED &&
+		type != PRIVATE &&
+		type != LOCKED )
+	{
+		Fatal( "invalid scope type", property, type, this );
+
+		return this;
+	}
+
+	if( typeof property != "string" ){
+		Fatal( "invalid property", property, type, this );
+
+		return this;
+	}
+
+	this.scope[ type ][ property ] = true;
+
+	return this;
+};
+
+Lemuria.prototype.addFactor = function addFactor( property ){
+	if( typeof property != "string" ){
+		Fatal( "invalid property", property, this );
+
+		return this;
+	}
+
+	if( property in this.factor ){
+		return this;
+	}
+
+	var index = Object.keys( this.factor ).length || 0;
+	index++;
+
+	this.factor[ property ] = index;
 
 	return this;
 };
@@ -254,7 +398,7 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 Lemuria.prototype.buildSchema = function buildSchema( option ){
 	option = option || { };
 
-	this.schema = new mongoose.Schema( this._schema, {
+	this.schema = new mongoose.Schema( this.structure, {
 		"collection": option.name || this.name,
 		"autoIndex": false,
 		"typeKey": "$type"
@@ -269,7 +413,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			return this;
 		}
 
-		if( typeof description == "string" ){
+		if( description && typeof description == "string" ){
 			this.description.addToSet( description );
 		}
 
@@ -281,7 +425,13 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 	this.schema.methods.tagged = function tagged( tag, callback ){
 		callback = called( callback );
 
-		if( typeof tag == "string" ){
+		if( U200b( tag ).separate( ).length > 1 ){
+			callback( );
+
+			return this;
+		}
+
+		if( tag && typeof tag == "string" ){
 			this.tag.addToSet( tag );
 		}
 
@@ -290,15 +440,41 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 		return this;
 	};
 
+	for( var property in this.structure ){
+		if( !doubt( this.structure[ property ] ).ARRAY &&
+			doubt( this.structure[ property ].$type ).ARRAY &&
+			this.structure[ property ].$type[ 0 ] === String )
+		{
+			var method = llamalize( [ "push", property ].join( "-" ) );
+
+			this.schema[ property ].methods[ method ] = function setElement( element, callback ){
+				callback = called( callback );
+
+				if( typeof element == "string" ){
+					this[ property ].addToSet( element );
+				}
+
+				callback( );
+
+				return this;
+			};
+		}
+	}
+
 	this.schema.pre( "save",
 		function onSave( next ){
-			if( !this.path &&
-				this.model &&
-				this.code )
-			{
+			if( this.name && this.stamp ){
+				this.code = [ this.name, this.stamp.code ].join( "-" );
+			}
+
+			if( !this.path && this.model && this.code ){
 				this.path = "/@model/@code"
 					.replace( "@model", this.model )
 					.replace( "@code", this.code );
+			}
+
+			if( this.title ){
+				this.name = shardize( this.title, true );
 			}
 
 			next( );
@@ -335,6 +511,23 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 		} ).bind( this ) );
 
 	return this;
+};
+
+/*;
+	@method-documentation:
+		Remove properties that may affect the inner workings of the model.
+	@end-method-documentation
+*/
+Lemuria.prototype.restrict = function restrict( data ){
+	delete data.reference;
+	delete data.hash;
+	delete data.stamp;
+	delete data.code;
+	delete data.short;
+	delete data.path;
+	delete data.model;
+
+	return data;
 };
 
 /*;
@@ -433,10 +626,7 @@ Lemuria.prototype.connect = function connect( databaseURL ){
 */
 Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 	var databaseURL = "";
-	if( database.host &&
-		database.port &&
-		database.name )
-	{
+	if( database.host && database.port && database.name ){
 		databaseURL = "mongodb://@host:@port/@databaseName"
 			.replace( "@host", database.host )
 			.replace( "@port", database.port )
@@ -480,14 +670,14 @@ Lemuria.prototype.buildModel = function buildModel( ){
 };
 
 Lemuria.prototype.construct = function construct( data ){
-	var _data = new this.model( data );
+	var instance = new this.model( data );
 
-	_data.once( "error",
+	instance.once( "error",
 		( function onError( ){
 			Bug( this.name, arguments, this );
 		} ).bind( this ) );
 
-	return _data;
+	return instance;
 };
 
 Lemuria.prototype.deploy = function deploy( ){
