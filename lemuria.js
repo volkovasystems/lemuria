@@ -151,36 +151,36 @@ Lemuria.prototype.initialize = function initialize( model ){
 		//: Fixed identifiable reference
 		"reference": {
 			"$type": String,
-			"trim": true,
+			"index": true,
 			"required": true,
-			"unique": true,
-			"index": true
+			"trim": true,
+			"unique": true
 		},
 
 		//: Changing identifiable reference
 		"hash": {
 			"$type": String,
-			"trim": true,
 			"required": true,
-			"unique": true,
-			"select": false
+			"select": false,
+			"trim": true,
+			"unique": true
 		},
 
 		//: Short fixed identifiable reference
 		"stamp": {
 			"code":{
 				"$type": String,
-				"trim": true,
+				"index": true,
 				"required": true,
-				"unique": true,
-				"index": true
+				"trim": true,
+				"unique": true
 			},
 			"setting": {
 				"$type": String,
-				"required": true,
-				"unique": true,
 				"index": true,
-				"select": false
+				"required": true,
+				"select": false,
+				"unique": true,
 			}
 		},
 
@@ -188,23 +188,25 @@ Lemuria.prototype.initialize = function initialize( model ){
 		"short": {
 			"code":{
 				"$type": String,
-				"trim": true,
+				"index": true,
 				"required": true,
-				"unique": true,
-				"index": true
+				"trim": true,
+				"unique": true
 			},
 			"setting": {
 				"$type": String,
-				"required": true,
-				"unique": true,
 				"index": true,
-				"select": false
+				"required": true,
+				"select": false,
+				"unique": true
 			}
 		},
 
 		//: name-stamp reference
 		"code": {
 			"$type": String,
+			"index": true,
+			"required": true,
 			"trim": true,
 			"unique": true
 		},
@@ -212,25 +214,28 @@ Lemuria.prototype.initialize = function initialize( model ){
 		//: This is the public path based on the code.
 		"path": {
 			"$type": String,
+			"index": true,
+			"required": true,
 			"trim": true,
 			"unique": true,
-			"index": true
 		},
 
 		//: The model type of the document.
 		"model": {
 			"$type": String,
-			"trim": true,
 			"default": name,
 			"enum": [ name ],
-			"select": false
+			"index": true,
+			"select": false,
+			"trim": true
 		},
 
 		//: Searchable name
 		"name": {
 			"$type": String,
+			"index": true,
 			"trim": true,
-			"index": true
+			"unique": true
 		},
 
 		//: Displayable name
@@ -242,53 +247,55 @@ Lemuria.prototype.initialize = function initialize( model ){
 		//: Array of descriptive phrases
 		"description": {
 			"$type": [ String ],
-			"trim": true,
 			"default": "",
 			"get": function getDescription( description ){
 				return U200b( description ).join( "," );
-			}
+			},
+			"trim": true
 		},
 
 		//: Status of the document.
 		"status": {
 			"$type": String,
-			"trim": true,
-			"required": true,
+			"default": ACTIVE,
 			"enum": [
 				ACTIVE,
 				DISABLED,
 				REMOVED,
 				LOCKED
 			],
-			"default": ACTIVE
+			"required": true,
+			"trim": true
 		},
 
 		//: Searchable tag references
 		"tag": {
 			"$type": [ String ],
-			"trim": true,
 			"default": name,
 			"index": true,
 			"get": function getTag( tag ){
 				return U200b( tag ).join( "," );
-			}
+			},
+			"trim": true
 		},
 
 		//: The date this document is created.
 		"date": {
 			"$type": [ Number ],
 			"default": Ethernity.now,
+			"index": true,
 			"get": function getDate( date ){
 				return Ethernity( date ).trueTime;
 			}
 		},
 
 		//: This will be used as the default sorting property.
-		"index": {
+		"sort": {
 			"$type": Number,
 			"default": function getIndex( ){
 				return Date.now( ) + Math.random( );
 			},
+			"index": true,
 			"select": false
 		},
 
