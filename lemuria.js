@@ -81,6 +81,7 @@
 			"mongoose": "mongoose",
 			"Olivant": "olivant",
 			"shardize": "shardize",
+			"titlelize": "titlelize",
 			"U200b": "u200b"
 		}
 	@end-include
@@ -97,7 +98,9 @@ var llamalize = require( "llamalize" );
 var mongodb = require( "mongodb" );
 var mongoose = require( "mongoose" );
 var Olivant = require( "olivant" );
+var optfor = require( "optfor" );
 var shardize = require( "shardize" );
+var titlelize = require( "titlelize" );
 var U200b = require( "u200b" );
 
 /*;
@@ -106,6 +109,9 @@ var U200b = require( "u200b" );
 	@end-notice
 */
 mongoose.Promise = require( "bluebird" );
+
+harden( "TYPE_OBJECT_ID", mongoose.Schema.Types.ObjectId );
+harden( "TYPE_MIXED", mongoose.Schema.Types.Mixed );
 
 harden( "ACTIVE", "active" );
 harden( "DISABLED", "disabled" );
@@ -133,10 +139,20 @@ harden( "database", Lemuria.database || { }, Lemuria );
 harden( "client", Lemuria.client || { }, Lemuria );
 
 Lemuria.prototype.initialize = function initialize( model ){
-	this.name = shardize( model, true );
-	var name = this.name;
+	var name = optfor( arguments, STRING );
 
-	this.title = llamalize( model, true );
+	if( !name ){
+		Fatal( "no model name given" );
+
+		return this;
+	}
+
+	name = shardize( name );
+
+	this.name = name;
+	this.title = titlelize( name );
+	this.label = llamalize( name );
+	this.alias = llamalize( name, true );
 
 	harden( "scope", { }, this );
 	harden( "public", { }, this.scope );
@@ -234,6 +250,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 		"name": {
 			"$type": String,
 			"index": true,
+			"required": true,
 			"trim": true,
 			"unique": true
 		},
@@ -241,6 +258,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 		//: Displayable name
 		"title": {
 			"$type": String,
+			"required": true,
 			"trim": true
 		},
 
@@ -335,7 +353,7 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 	this.structure[ name ] = schema;
 
 	if( doubt( schema ).ARRAY &&
-		typeof schema[ 0 ] == "object" &&
+		typeof schema[ 0 ] == OBJECT &&
 		!doubt( typeof schema[ 0 ].$type ).ARRAY )
 	{
 		this.scope[ LIMITED ][ name ] = true;
@@ -353,7 +371,7 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 };
 
 Lemuria.prototype.addScope = function addScope( property, type ){
-	if( typeof type == "string" &&
+	if( typeof type == STRING &&
 		type != PUBLIC &&
 		type != LIMITED &&
 		type != HIDDEN &&
@@ -367,7 +385,7 @@ Lemuria.prototype.addScope = function addScope( property, type ){
 		return this;
 	}
 
-	if( typeof property != "string" ){
+	if( typeof property != STRING ){
 		Fatal( "invalid property", property, type, this );
 
 		return this;
@@ -379,7 +397,7 @@ Lemuria.prototype.addScope = function addScope( property, type ){
 };
 
 Lemuria.prototype.addFactor = function addFactor( property ){
-	if( typeof property != "string" ){
+	if( typeof property != STRING ){
 		Fatal( "invalid property", property, this );
 
 		return this;
@@ -420,7 +438,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			return this;
 		}
 
-		if( description && typeof description == "string" ){
+		if( description && typeof description == STRING ){
 			this.description.addToSet( description );
 		}
 
@@ -438,7 +456,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			return this;
 		}
 
-		if( tag && typeof tag == "string" ){
+		if( tag && typeof tag == STRING ){
 			this.tag.addToSet( tag );
 		}
 
@@ -452,12 +470,12 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			doubt( this.structure[ property ].$type ).ARRAY &&
 			this.structure[ property ].$type[ 0 ] === String )
 		{
-			var method = llamalize( [ "push", property ].join( "-" ) );
+			var method = llamalize( `push-${ property }` );
 
 			this.schema[ property ].methods[ method ] = function setElement( element, callback ){
 				callback = called( callback );
 
-				if( typeof element == "string" ){
+				if( typeof element == STRING ){
 					this[ property ].addToSet( element );
 				}
 
@@ -470,19 +488,17 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 
 	this.schema.pre( "save",
 		function onSave( next ){
-			if( this.name && this.stamp ){
-				this.code = [ this.name, this.stamp.code ].join( "-" );
+			if( !this.code && this.name && this.stamp ){
+				this.code = `${ this.name }-${ this.stamp.code }`;
+
+				this.code = U200b( this.code ).raw( );
 			}
 
 			if( !this.path && this.model && this.code ){
-				this.path = "/@model/@code"
-					.replace( "@model", this.model )
-					.replace( "@code", this.code );
+				this.path = `/${ this.model }/${ this.code }`;
 			}
 
-			if( this.title ){
-				this.name = shardize( this.title, true );
-			}
+			this.name = this.name || shardize( this.title );
 
 			next( );
 		} );
@@ -552,7 +568,7 @@ Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
 	}
 
 	var result = undefined;
-	if( typeof initialize == "function" ){
+	if( typeof initialize == FUNCTION ){
 		result = initialize.call( this, plugin );
 	}
 
@@ -562,7 +578,7 @@ Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
 };
 
 Lemuria.prototype.attachHook = function attachHook( hook ){
-	if( typeof hook != "function" ){
+	if( typeof hook != FUNCTION ){
 		throw new Error( "invalid hook function" );
 	}
 
@@ -577,7 +593,7 @@ Lemuria.prototype.attachHook = function attachHook( hook ){
 	@end-method-documentation
 */
 Lemuria.prototype.procedure = function procedure( method ){
-	if( typeof method == "function" ){
+	if( typeof method == FUNCTION ){
 		try{
 			method.call( this );
 
@@ -634,10 +650,7 @@ Lemuria.prototype.connect = function connect( databaseURL ){
 Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 	var databaseURL = "";
 	if( database.host && database.port && database.name ){
-		databaseURL = "mongodb://@host:@port/@databaseName"
-			.replace( "@host", database.host )
-			.replace( "@port", database.port )
-			.replace( "@databaseName", database.name );
+		databaseURL = `mongodb://${ database.host }:${ database.port }/${ database.name }`;
 	}
 
 	if( !databaseURL ){
@@ -688,7 +701,7 @@ Lemuria.prototype.construct = function construct( data ){
 };
 
 Lemuria.prototype.deploy = function deploy( ){
-	harden( this.title + "Mold", this );
+	harden( `${ this.title }Mold`, this );
 
 	return this;
 };

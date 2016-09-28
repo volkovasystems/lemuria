@@ -1,6 +1,6 @@
 {
   "name": "lemuria",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Standard default model.",
   "main": "lemuria.js",
   "scripts": {
@@ -34,7 +34,9 @@
     "mongodb": "^2.2.10",
     "mongoose": "^4.6.1",
     "olivant": "^0.7.19",
+    "optfor": "^0.2.0",
     "shardize": "^0.3.1",
+    "titlelize": "^0.2.1",
     "u200b": "^0.2.3"
   }
 }
