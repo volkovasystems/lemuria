@@ -266,9 +266,6 @@ Lemuria.prototype.initialize = function initialize( model ){
 		"description": {
 			"$type": [ String ],
 			"default": "",
-			"get": function getDescription( description ){
-				return U200b( description ).join( "," );
-			},
 			"trim": true
 		},
 
@@ -291,9 +288,6 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"$type": [ String ],
 			"default": name,
 			"index": true,
-			"get": function getTag( tag ){
-				return U200b( tag ).join( "," );
-			},
 			"trim": true
 		},
 
@@ -318,7 +312,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 		},
 
 		"_id": {
-			"$type": mongoose.Schema.Types.ObjectId,
+			"$type": TYPE_OBJECT_ID,
 			"select": false
 		},
 
@@ -352,19 +346,12 @@ Lemuria.prototype.initialize = function initialize( model ){
 Lemuria.prototype.addSchema = function addSchema( name, schema ){
 	this.structure[ name ] = schema;
 
-	if( doubt( schema ).ARRAY &&
+	if( !doubt( typeof schema[ 0 ].$type ).ARRAY &&
+		doubt( schema ).ARRAY &&
 		typeof schema[ 0 ] == OBJECT &&
-		!doubt( typeof schema[ 0 ].$type ).ARRAY )
+		schema[ 0 ].ref )
 	{
 		this.scope[ LIMITED ][ name ] = true;
-	}
-
-	if( doubt( schema.$type ).ARRAY &&
-		schema.$type[ 0 ] === String )
-	{
-		schema.get = function getElement( data ){
-			return U200b( data ).join( "," );
-		};
 	}
 
 	return this;
@@ -429,63 +416,6 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 		"typeKey": "$type"
 	} );
 
-	this.schema.methods.describe = function describe( description, callback ){
-		callback = called( callback );
-
-		if( U200b( description ).separate( ).length > 1 ){
-			callback( );
-
-			return this;
-		}
-
-		if( description && typeof description == STRING ){
-			this.description.addToSet( description );
-		}
-
-		callback( );
-
-		return this;
-	};
-
-	this.schema.methods.tagged = function tagged( tag, callback ){
-		callback = called( callback );
-
-		if( U200b( tag ).separate( ).length > 1 ){
-			callback( );
-
-			return this;
-		}
-
-		if( tag && typeof tag == STRING ){
-			this.tag.addToSet( tag );
-		}
-
-		callback( );
-
-		return this;
-	};
-
-	for( var property in this.structure ){
-		if( !doubt( this.structure[ property ] ).ARRAY &&
-			doubt( this.structure[ property ].$type ).ARRAY &&
-			this.structure[ property ].$type[ 0 ] === String )
-		{
-			var method = llamalize( `push-${ property }` );
-
-			this.schema[ property ].methods[ method ] = function setElement( element, callback ){
-				callback = called( callback );
-
-				if( typeof element == STRING ){
-					this[ property ].addToSet( element );
-				}
-
-				callback( );
-
-				return this;
-			};
-		}
-	}
-
 	this.schema.pre( "save",
 		function onSave( next ){
 			if( !this.code && this.name && this.stamp ){
@@ -499,6 +429,15 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			}
 
 			this.name = this.name || shardize( this.title );
+
+			if( this.description.length == 0 ){
+				this.description.addToSet( this.code );
+			}
+
+			if( this.tag.length == 0 ){
+				this.tag.addToSet( this.name );
+				this.tag.addToSet( this.code );
+			}
 
 			next( );
 		} );
@@ -698,6 +637,57 @@ Lemuria.prototype.construct = function construct( data ){
 		} ).bind( this ) );
 
 	return instance;
+};
+
+Lemuria.prototype.attachEngine = function attachEngine( engine ){
+	/*;
+		@meta-configuration:
+			{
+				"engine:required": [
+					"string",
+					"object",
+					"function"
+				]
+			}
+		@end-meta-configuration
+	*/
+	if( this.engine ){
+		return this;
+	}
+
+	engine = optfor( arguments, STRING ) || undefined;
+
+	if( engine ){
+		var name = llamalize( engine, true );
+		engine = global[ name ] || undefined;
+
+	}else{
+		engine = optfor( arguments, OBJECT ) || undefined;
+	}
+
+	if( engine ){
+		engine = engine.constructor;
+
+	}else{
+		engine = optfor( arguments, FUNCTION ) || undefined;
+	}
+
+	if( !engine.prototype.rootEngine ||
+		!( engine.prototype.rootEngine instanceof engine ) )
+	{
+		engine = undefined;
+	}
+
+	if( typeof engine == FUNCTION ){
+		this.engine = engine;
+
+		Prompt( "engine attached to mold", engine.name );
+
+	}else{
+		Fatal( "cannot attach engine to mold", arguments );
+	}
+
+	return this;
 };
 
 Lemuria.prototype.deploy = function deploy( ){
