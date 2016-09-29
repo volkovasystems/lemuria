@@ -240,7 +240,6 @@ Lemuria.prototype.initialize = function initialize( model ){
 		"model": {
 			"$type": String,
 			"default": name,
-			"enum": [ name ],
 			"index": true,
 			"select": false,
 			"trim": true
@@ -269,6 +268,14 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"trim": true
 		},
 
+		//: Searchable tag references
+		"tag": {
+			"$type": [ String ],
+			"default": name,
+			"index": true,
+			"trim": true
+		},
+
 		//: Status of the document.
 		"status": {
 			"$type": String,
@@ -280,14 +287,6 @@ Lemuria.prototype.initialize = function initialize( model ){
 				LOCKED
 			],
 			"required": true,
-			"trim": true
-		},
-
-		//: Searchable tag references
-		"tag": {
-			"$type": [ String ],
-			"default": name,
-			"index": true,
 			"trim": true
 		},
 
@@ -326,6 +325,15 @@ Lemuria.prototype.initialize = function initialize( model ){
 	this.addScope( "status", RESTRICTED );
 	this.addScope( "date", RESTRICTED );
 
+	this.addScope( "stamp.code", PUBLIC );
+	this.addScope( "short.code", PUBLIC );
+	this.addScope( "code", PUBLIC );
+	this.addScope( "path", PUBLIC );
+	this.addScope( "name", PUBLIC );
+	this.addScope( "title", PUBLIC );
+	this.addScope( "description", PUBLIC );
+	this.addScope( "tag", PUBLIC );
+
 	this.addFactor( "name" );
 	this.addFactor( "title" );
 	this.addFactor( "model" );
@@ -349,9 +357,11 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 	if( !doubt( typeof schema[ 0 ].$type ).ARRAY &&
 		doubt( schema ).ARRAY &&
 		typeof schema[ 0 ] == OBJECT &&
-		schema[ 0 ].ref )
+		schema[ 0 ].reference &&
+		typeof schema[ 0 ].reference == OBJECT &&
+		schema[ 0 ].reference.ref )
 	{
-		this.scope[ LIMITED ][ name ] = true;
+		this.addScope( name, LIMITED );
 	}
 
 	return this;
@@ -416,6 +426,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 		"typeKey": "$type"
 	} );
 
+	var self = this;
 	this.schema.pre( "save",
 		function onSave( next ){
 			if( !this.code && this.name && this.stamp ){
@@ -439,7 +450,35 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 				this.tag.addToSet( this.code );
 			}
 
-			next( );
+			if( self.engine && typeof self.engine == FUNCTION ){
+				var option = { };
+				option[ self.label ] = this.toObject( );
+
+				self.engine( option )
+					.generateIdentity( ( function onGenerateIdentity( issue, identity, option ){
+						if( issue ){
+							issue
+								.remind( "failed generate identity", option )
+								.remind( "identity generate for identity refresh" )
+								.prompt( );
+
+						}else if( this.hash != identity.hash ){
+							this.hash = identity.hash;
+							this.stamp = identity.stamp;
+							this.short = identity.short;
+							this.code = identity.code;
+							this.path = identity.path;
+
+							Prompt( "identity refresh for", this.code, this.model );
+						}
+
+						next( );
+
+					} ).bind( this ) );
+
+			}else{
+				next( );
+			}
 		} );
 
 	var self = this;
@@ -484,10 +523,14 @@ Lemuria.prototype.restrict = function restrict( data ){
 	delete data.reference;
 	delete data.hash;
 	delete data.stamp;
-	delete data.code;
 	delete data.short;
+	delete data.code;
 	delete data.path;
 	delete data.model;
+	delete data.sort;
+	delete data.date;
+	delete data._id;
+	delete data.__v;
 
 	return data;
 };
