@@ -355,9 +355,9 @@ Lemuria.prototype.initialize = function initialize( model ){
 Lemuria.prototype.addSchema = function addSchema( name, schema ){
 	this.structure[ name ] = schema;
 
-	if( !doubt( typeof schema[ 0 ].$type ).ARRAY &&
-		doubt( schema ).ARRAY &&
+	if( doubt( schema ).ARRAY &&
 		typeof schema[ 0 ] == OBJECT &&
+		!doubt( typeof schema[ 0 ].$type ).ARRAY &&
 		schema[ 0 ].reference &&
 		typeof schema[ 0 ].reference == OBJECT &&
 		schema[ 0 ].reference.ref )
