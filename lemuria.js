@@ -158,6 +158,7 @@ Lemuria.prototype.initialize = function initialize( model ){
 	harden( "public", { }, this.scope );
 	harden( "limited", { }, this.scope );
 	harden( "restricted", { }, this.scope );
+	harden( "permitted", { }, this.scope );
 	harden( "private", { }, this.scope );
 	harden( "locked", { }, this.scope );
 
