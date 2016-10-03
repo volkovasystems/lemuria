@@ -1,6 +1,6 @@
 {
   "name": "lemuria",
-  "version": "0.1.16",
+  "version": "0.1.18",
   "dependencies": {
     "bluebird": {
       "version": "3.4.6",
