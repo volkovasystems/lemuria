@@ -735,7 +735,7 @@ Lemuria.prototype.attachEngine = function attachEngine( engine ){
 };
 
 Lemuria.prototype.deploy = function deploy( ){
-	harden( `${ this.title }Mold`, this );
+	harden( `${ this.alias }Mold`, this, global );
 
 	return this;
 };
