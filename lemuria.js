@@ -139,7 +139,7 @@ harden( "database", Lemuria.database || { }, Lemuria );
 harden( "client", Lemuria.client || { }, Lemuria );
 
 Lemuria.prototype.initialize = function initialize( model ){
-	var name = optfor( arguments, STRING );
+	let name = optfor( arguments, STRING );
 
 	if( !name ){
 		Fatal( "no model name given" );
@@ -405,7 +405,7 @@ Lemuria.prototype.addFactor = function addFactor( property ){
 		return this;
 	}
 
-	var index = Object.keys( this.factor ).length || 0;
+	let index = Object.keys( this.factor ).length || 0;
 	index++;
 
 	this.factor[ property ] = index;
@@ -427,7 +427,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 		"typeKey": "$type"
 	} );
 
-	var self = this;
+	let self = this;
 	this.schema.pre( "save",
 		function onSave( next ){
 			if( !this.code && this.name && this.stamp ){
@@ -452,7 +452,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			}
 
 			if( self.engine && typeof self.engine == FUNCTION ){
-				var option = { };
+				let option = { };
 				option[ self.label ] = this.toObject( );
 
 				self.engine( option )
@@ -482,7 +482,6 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			}
 		} );
 
-	var self = this;
 	this.schema.pre( "save",
 		function onSave( next ){
 			self.emit( "save", this, self );
@@ -550,7 +549,7 @@ Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
 		throw new Error( "schema not instantiated" );
 	}
 
-	var result = undefined;
+	let result = undefined;
 	if( typeof initialize == FUNCTION ){
 		result = initialize.call( this, plugin );
 	}
@@ -596,7 +595,7 @@ Lemuria.prototype.procedure = function procedure( method ){
 	@end-method-documentation
 */
 Lemuria.prototype.connect = function connect( databaseURL ){
-	var databaseName = databaseURL.match( /\/([a-z][a-zA-Z0-9_\-]+)$/ )[ 1 ];
+	let databaseName = databaseURL.match( /\/([a-z][a-zA-Z0-9_\-]+)$/ )[ 1 ];
 
 	if( databaseName in Lemuria.database ){
 		this.database = Lemuria.database[ databaseName ];
@@ -631,7 +630,7 @@ Lemuria.prototype.connect = function connect( databaseURL ){
 	@end-method-documentation
 */
 Lemuria.prototype.bindDatabase = function bindDatabase( database ){
-	var databaseURL = "";
+	let databaseURL = "";
 	if( database.host && database.port && database.name ){
 		databaseURL = `mongodb://${ database.host }:${ database.port }/${ database.name }`;
 	}
@@ -640,7 +639,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 		throw new Error( "cannot extract database url" );
 	}
 
-	var databaseName = database.name;
+	let databaseName = database.name;
 	if( databaseName in Lemuria.database ){
 		this.database = Lemuria.database[ databaseName ];
 
@@ -673,7 +672,7 @@ Lemuria.prototype.buildModel = function buildModel( ){
 };
 
 Lemuria.prototype.construct = function construct( data ){
-	var instance = new this.model( data );
+	let instance = new this.model( data );
 
 	instance.once( "error",
 		( function onError( ){
@@ -702,28 +701,38 @@ Lemuria.prototype.attachEngine = function attachEngine( engine ){
 	engine = optfor( arguments, STRING ) || undefined;
 
 	if( engine ){
-		var name = llamalize( engine, true );
+		let name = llamalize( engine, true );
 		engine = global[ name ] || undefined;
 
 	}else{
 		engine = optfor( arguments, OBJECT ) || undefined;
 	}
 
-	if( engine ){
+	var rootEngine = engine.rootEngine;
+	if( engine &&
+		engine.rootEngine )
+	{
+		engine = engine.rootEngine.constructor;
+
+	}else if( typeof engine == OBJECT &&
+		typeof engine.constructor == FUNCTION &&
+		( engine.rootEngine ||
+			engine.constructor.rootEngine ||
+			engine.constructor.prototype.rootEngine ) )
+	{
 		engine = engine.constructor;
+
+		rootEngine = engine.constructor.rootEngine || engine.constructor.prototype.rootEngine;
 
 	}else{
 		engine = optfor( arguments, FUNCTION ) || undefined;
 	}
 
-	if( !engine.prototype.rootEngine ||
-		!( engine.prototype.rootEngine instanceof engine ) )
+	if( typeof engine == FUNCTION &&
+		rootEngine instanceof engine )
 	{
-		engine = undefined;
-	}
-
-	if( typeof engine == FUNCTION ){
 		this.engine = engine;
+		this.rootEngine = rootEngine;
 
 		Prompt( "engine attached to mold", engine.name );
 
