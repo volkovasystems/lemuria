@@ -1,6 +1,6 @@
 {
   "name": "lemuria",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "dependencies": {
     "bluebird": {
       "version": "3.4.6",
@@ -462,7 +462,7 @@
       }
     },
     "olivant": {
-      "version": "0.8.4",
+      "version": "0.8.5",
       "from": "olivant@latest",
       "dependencies": {
         "asea": {
@@ -553,8 +553,8 @@
           }
         },
         "glucose": {
-          "version": "0.2.1",
-          "from": "glucose@0.2.1",
+          "version": "0.2.2",
+          "from": "glucose@0.2.2",
           "dependencies": {
             "zelf": {
               "version": "0.0.4",
