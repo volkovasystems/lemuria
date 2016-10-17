@@ -311,16 +311,13 @@ Lemuria.prototype.initialize = function initialize( model ){
 			"select": false
 		},
 
-		"_id": {
-			"$type": TYPE_OBJECT_ID,
-			"select": false
-		},
-
 		"__v": {
 			"$type": Number,
 			"select": false
 		}
 	};
+
+	this.addScope( "_id", LOCKED );
 
 	this.addScope( "reference", PERMITTED );
 	this.addScope( "status", RESTRICTED );
@@ -443,12 +440,11 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 			this.name = this.name || shardize( this.title );
 
 			if( this.description.length == 0 ){
-				this.description.addToSet( this.code );
+				this.description = [ this.code ];
 			}
 
 			if( this.tag.length == 0 ){
-				this.tag.addToSet( this.name );
-				this.tag.addToSet( this.code );
+				this.tag = [ this.name, this.code ];
 			}
 
 			if( self.engine && typeof self.engine == FUNCTION ){
