@@ -713,7 +713,7 @@ Lemuria.prototype.attachEngine = function attachEngine( engine ){
 		engine = optfor( arguments, OBJECT ) || undefined;
 	}
 
-	var rootEngine = engine.rootEngine;
+	let rootEngine = engine.rootEngine;
 	if( engine &&
 		engine.rootEngine )
 	{
