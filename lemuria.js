@@ -602,7 +602,7 @@ Lemuria.prototype.procedure = function procedure( method ){
 Lemuria.prototype.connect = function connect( databaseURL ){
 	let databaseName = databaseURL.match( /\/([a-z][a-zA-Z0-9_\-]+)$/ )[ 1 ];
 
-	if( databaseName in Lemuria.database ){
+	if( kein( Lemuria.database, databaseName ) ){
 		this.database = Lemuria.database[ databaseName ];
 
 	}else{
@@ -611,7 +611,7 @@ Lemuria.prototype.connect = function connect( databaseURL ){
 		harden( databaseName, this.database, Lemuria.database );
 	}
 
-	if( databaseName in Lemuria.client ){
+	if( kein( Lemuria.client, databaseName ) ){
 		this.client = Lemuria.client[ databaseName ];
 
 	}else{
