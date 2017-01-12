@@ -83,6 +83,7 @@
 			"mongodb": "mongodb",
 			"mongoose": "mongoose",
 			"Olivant": "olivant",
+			"protype": "protype",
 			"shardize": "shardize",
 			"titlelize": "titlelize",
 			"U200b": "u200b"
@@ -356,10 +357,10 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 	this.structure[ name ] = schema;
 
 	if( doubt( schema ).ARRAY &&
-		typeof schema[ 0 ] == OBJECT &&
+		protype( schema[ 0 ], OBJECT ) &&
 		!doubt( typeof schema[ 0 ].$type ).ARRAY &&
 		schema[ 0 ].reference &&
-		typeof schema[ 0 ].reference == OBJECT &&
+		protype( schema[ 0 ].reference, OBJECT ) &&
 		schema[ 0 ].reference.ref )
 	{
 		this.addScope( name, LIMITED );
