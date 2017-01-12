@@ -18,12 +18,31 @@
   ],
   "author": "Richeve S. Bebedor <richeve.bebedor@gmail.com>",
   "contributors": [
-  	"John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>"
+    "John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>"
   ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/volkovasystems/lemuria/issues"
   },
   "homepage": "https://github.com/volkovasystems/lemuria#readme",
-  "dependencies": {}
+  "dependencies": {
+    "called": "^0.6.0",
+    "clazof": "^0.2.0",
+    "diatom": "^0.4.0",
+    "doubt": "^0.6.0",
+    "ethernity": "^0.5.0",
+    "falzy": "^0.7.0",
+    "harden": "^0.13.0",
+    "heredito": "^0.12.0",
+    "kein": "^0.2.0",
+    "llamalize": "^0.5.0",
+    "mongodb": "^2.2.20",
+    "mongoose": "^4.7.6",
+    "olivant": "^0.9.0",
+    "optfor": "^0.6.0",
+    "protype": "^0.8.0",
+    "shardize": "^0.5.0",
+    "titlelize": "^0.4.0",
+    "u200b": "^0.8.0"
+  }
 }
