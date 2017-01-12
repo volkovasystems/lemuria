@@ -562,7 +562,7 @@ Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
 };
 
 Lemuria.prototype.attachHook = function attachHook( hook ){
-	if( typeof hook != FUNCTION ){
+	if( !protype( hook, FUNCTION ) ){
 		throw new Error( "invalid hook function" );
 	}
 
@@ -577,7 +577,7 @@ Lemuria.prototype.attachHook = function attachHook( hook ){
 	@end-method-documentation
 */
 Lemuria.prototype.procedure = function procedure( method ){
-	if( typeof method == FUNCTION ){
+	if( protype( method, FUNCTION ) ){
 		try{
 			method.call( this );
 
