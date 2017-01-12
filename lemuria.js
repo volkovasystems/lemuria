@@ -396,7 +396,7 @@ Lemuria.prototype.addScope = function addScope( property, type ){
 };
 
 Lemuria.prototype.addFactor = function addFactor( property ){
-	if( typeof property != STRING ){
+	if( !protype( property, STRING ) ){
 		Fatal( "invalid property", property, this );
 
 		return this;
@@ -451,7 +451,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 				this.tag = [ this.name, this.code ];
 			}
 
-			if( self.engine && typeof self.engine == FUNCTION ){
+			if( self.engine && protype( self.engine, FUNCTION ) ){
 				let option = { };
 				option[ self.label ] = this.toObject( );
 
