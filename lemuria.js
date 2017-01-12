@@ -645,7 +645,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 	}
 
 	let databaseName = database.name;
-	if( databaseName in Lemuria.database ){
+	if( kein( Lemuria.database, databaseName ) ){
 		this.database = Lemuria.database[ databaseName ];
 
 	}else{
@@ -654,7 +654,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 		harden( databaseName, this.database, Lemuria.database );
 	}
 
-	if( databaseName in Lemuria.client ){
+	if( kein( Lemuria.client, databaseName ) ){
 		this.client = Lemuria.client[ databaseName ];
 
 	}else{
