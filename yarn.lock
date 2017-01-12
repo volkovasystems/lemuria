@@ -916,11 +916,11 @@ shardize@^0.5.0:
 
 sliced@0.0.5:
   version "0.0.5"
-  resolved "http://registry.npmjs.org/sliced/-/sliced-0.0.5.tgz#5edc044ca4eb6f7816d50ba2fc63e25d8fe4707f"
+  resolved "https://registry.yarnpkg.com/sliced/-/sliced-0.0.5.tgz#5edc044ca4eb6f7816d50ba2fc63e25d8fe4707f"
 
 sliced@1.0.1:
   version "1.0.1"
-  resolved "http://registry.npmjs.org/sliced/-/sliced-1.0.1.tgz#0b3a662b5d04c3177b1926bea82b03f837a2ef41"
+  resolved "https://registry.yarnpkg.com/sliced/-/sliced-1.0.1.tgz#0b3a662b5d04c3177b1926bea82b03f837a2ef41"
 
 snapd@^0.7.0:
   version "0.7.0"
