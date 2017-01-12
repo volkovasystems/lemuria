@@ -370,7 +370,7 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 };
 
 Lemuria.prototype.addScope = function addScope( property, type ){
-	if( typeof type == STRING &&
+	if( protype( type, STRING ) &&
 		type != PUBLIC &&
 		type != LIMITED &&
 		type != HIDDEN &&
@@ -384,7 +384,7 @@ Lemuria.prototype.addScope = function addScope( property, type ){
 		return this;
 	}
 
-	if( typeof property != STRING ){
+	if( !protype( property, STRING ) ){
 		Fatal( "invalid property", property, type, this );
 
 		return this;
