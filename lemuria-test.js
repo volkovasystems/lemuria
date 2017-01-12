@@ -1,5 +1,7 @@
 "use strict";
 
-const Lemuria = require( "lemuria" );
+const Lemuria = require( "./lemuria.js" );
 
-let UserMold = Lemuria( "User" );
+let UserMold = Lemuria( "User" )
+
+	.bindDatabase(  );
