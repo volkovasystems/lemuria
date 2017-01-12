@@ -5,7 +5,7 @@
 		The MIT License (MIT)
 		@mit-license
 
-		Copyright (@c) 2016 Richeve Siodina Bebedor
+		Copyright (@c) 2017 Richeve Siodina Bebedor
 		@email: richeve.bebedor@gmail.com
 
 		Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,6 +34,9 @@
 			"file": "lemuria.js",
 			"module": "lemuria",
 			"author": "Richeve S. Bebedor",
+			"contributors": [
+				"John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>"
+			]
 			"eMail": "richeve.bebedor@gmail.com",
 			"repository": "https://github.com/volkovasystems/lemuria.git",
 			"test": "lemuria-test.js",
@@ -87,21 +90,21 @@
 	@end-include
 */
 
-var called = require( "called" );
-var diatom = require( "diatom" );
-var doubt = require( "doubt" );
-var Ethernity = require( "ethernity" );
-var EventEmitter = require( "events" );
-var harden = require( "harden" );
-var heredito = require( "heredito" );
-var llamalize = require( "llamalize" );
-var mongodb = require( "mongodb" );
-var mongoose = require( "mongoose" );
-var Olivant = require( "olivant" );
-var optfor = require( "optfor" );
-var shardize = require( "shardize" );
-var titlelize = require( "titlelize" );
-var U200b = require( "u200b" );
+const called = require( "called" );
+const diatom = require( "diatom" );
+const doubt = require( "doubt" );
+const Ethernity = require( "ethernity" );
+const EventEmitter = require( "events" );
+const harden = require( "harden" );
+const heredito = require( "heredito" );
+const llamalize = require( "llamalize" );
+const mongodb = require( "mongodb" );
+const mongoose = require( "mongoose" );
+const Olivant = require( "olivant" );
+const optfor = require( "optfor" );
+const shardize = require( "shardize" );
+const titlelize = require( "titlelize" );
+const U200b = require( "u200b" );
 
 /*;
 	@notice:
