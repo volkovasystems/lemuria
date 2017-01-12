@@ -78,6 +78,7 @@
 			"doubt": "doubt",
 			"Ethernity": "ethernity",
 			"EventEmitter": "events",
+			"falzy": "falzy",
 			"harden": "harden",
 			"heredito": "heredito",
 			"llamalize": "llamalize",
@@ -98,6 +99,7 @@ const diatom = require( "diatom" );
 const doubt = require( "doubt" );
 const Ethernity = require( "ethernity" );
 const EventEmitter = require( "events" );
+const falzy = require( "falzy" );
 const harden = require( "harden" );
 const heredito = require( "heredito" );
 const llamalize = require( "llamalize" );
@@ -637,7 +639,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 		databaseURL = `mongodb://${ database.host }:${ database.port }/${ database.name }`;
 	}
 
-	if( !databaseURL ){
+	if( falzy( databaseURL ) ){
 		throw new Error( "cannot extract database url" );
 	}
 
@@ -664,7 +666,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 };
 
 Lemuria.prototype.buildModel = function buildModel( ){
-	if( !( this.schema instanceof mongoose.Schema ) ){
+	if( !( clazof( this.schema, mongoose.Schema ) ) ){
 		throw new Error( "schema not instantiated" );
 	}
 
@@ -716,8 +718,8 @@ Lemuria.prototype.attachEngine = function attachEngine( engine ){
 	{
 		engine = engine.rootEngine.constructor;
 
-	}else if( typeof engine == OBJECT &&
-		typeof engine.constructor == FUNCTION &&
+	}else if( protype( engine, OBJECT ) &&
+		protype( engine.constructor, FUNCTION ) &&
 		( engine.rootEngine ||
 			engine.constructor.rootEngine ||
 			engine.constructor.prototype.rootEngine ) )
@@ -730,8 +732,8 @@ Lemuria.prototype.attachEngine = function attachEngine( engine ){
 		engine = optfor( arguments, FUNCTION ) || undefined;
 	}
 
-	if( typeof engine == FUNCTION &&
-		rootEngine instanceof engine )
+	if( protype( engine, FUNCTION ) &&
+		clazof( rootEngine, engine ) )
 	{
 		this.engine = engine;
 		this.rootEngine = rootEngine;
