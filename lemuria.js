@@ -81,6 +81,7 @@
 			"falzy": "falzy",
 			"harden": "harden",
 			"heredito": "heredito",
+			"kein": "kein",
 			"llamalize": "llamalize",
 			"mongodb": "mongodb",
 			"mongoose": "mongoose",
@@ -406,7 +407,7 @@ Lemuria.prototype.addFactor = function addFactor( property ){
 		return this;
 	}
 
-	if( property in this.factor ){
+	if( kein( this.factor, property ) ){
 		return this;
 	}
 
