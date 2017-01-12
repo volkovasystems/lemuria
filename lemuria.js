@@ -73,6 +73,7 @@
 	@include:
 		{
 			"called": "called",
+			"clazof": "clazof",
 			"diatom": "diatom",
 			"doubt": "doubt",
 			"Ethernity": "ethernity",
@@ -92,6 +93,7 @@
 */
 
 const called = require( "called" );
+const clazof = require( "clazof" );
 const diatom = require( "diatom" );
 const doubt = require( "doubt" );
 const Ethernity = require( "ethernity" );
@@ -545,12 +547,12 @@ Lemuria.prototype.restrict = function restrict( data ){
 	@end-method-documentation
 */
 Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
-	if( !( this.schema instanceof mongoose.Schema ) ){
+	if( !( clazof( this.schema, mongoose.Schema ) ) ){
 		throw new Error( "schema not instantiated" );
 	}
 
 	let result = undefined;
-	if( typeof initialize == FUNCTION ){
+	if( protype( initialize, FUNCTION ) ){
 		result = initialize.call( this, plugin );
 	}
 
