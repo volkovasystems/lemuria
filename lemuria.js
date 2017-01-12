@@ -5,7 +5,7 @@
 		The MIT License (MIT)
 		@mit-license
 
-		Copyright (@c) 2016 Richeve Siodina Bebedor
+		Copyright (@c) 2017 Richeve Siodina Bebedor
 		@email: richeve.bebedor@gmail.com
 
 		Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,6 +34,9 @@
 			"file": "lemuria.js",
 			"module": "lemuria",
 			"author": "Richeve S. Bebedor",
+			"contributors": [
+				"John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>"
+			]
 			"eMail": "richeve.bebedor@gmail.com",
 			"repository": "https://github.com/volkovasystems/lemuria.git",
 			"test": "lemuria-test.js",
@@ -70,16 +73,20 @@
 	@include:
 		{
 			"called": "called",
+			"clazof": "clazof",
 			"diatom": "diatom",
 			"doubt": "doubt",
 			"Ethernity": "ethernity",
 			"EventEmitter": "events",
+			"falzy": "falzy",
 			"harden": "harden",
 			"heredito": "heredito",
+			"kein": "kein",
 			"llamalize": "llamalize",
 			"mongodb": "mongodb",
 			"mongoose": "mongoose",
 			"Olivant": "olivant",
+			"protype": "protype",
 			"shardize": "shardize",
 			"titlelize": "titlelize",
 			"U200b": "u200b"
@@ -87,21 +94,25 @@
 	@end-include
 */
 
-var called = require( "called" );
-var diatom = require( "diatom" );
-var doubt = require( "doubt" );
-var Ethernity = require( "ethernity" );
-var EventEmitter = require( "events" );
-var harden = require( "harden" );
-var heredito = require( "heredito" );
-var llamalize = require( "llamalize" );
-var mongodb = require( "mongodb" );
-var mongoose = require( "mongoose" );
-var Olivant = require( "olivant" );
-var optfor = require( "optfor" );
-var shardize = require( "shardize" );
-var titlelize = require( "titlelize" );
-var U200b = require( "u200b" );
+const called = require( "called" );
+const clazof = require( "clazof" );
+const diatom = require( "diatom" );
+const doubt = require( "doubt" );
+const Ethernity = require( "ethernity" );
+const EventEmitter = require( "events" );
+const falzy = require( "falzy" );
+const harden = require( "harden" );
+const heredito = require( "heredito" );
+const kein = require( "kein" );
+const llamalize = require( "llamalize" );
+const mongodb = require( "mongodb" );
+const mongoose = require( "mongoose" );
+const Olivant = require( "olivant" );
+const optfor = require( "optfor" );
+const protype = require( "protype" );
+const shardize = require( "shardize" );
+const titlelize = require( "titlelize" );
+const U200b = require( "u200b" );
 
 /*;
 	@notice:
@@ -353,10 +364,10 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 	this.structure[ name ] = schema;
 
 	if( doubt( schema ).ARRAY &&
-		typeof schema[ 0 ] == OBJECT &&
+		protype( schema[ 0 ], OBJECT ) &&
 		!doubt( typeof schema[ 0 ].$type ).ARRAY &&
 		schema[ 0 ].reference &&
-		typeof schema[ 0 ].reference == OBJECT &&
+		protype( schema[ 0 ].reference, OBJECT ) &&
 		schema[ 0 ].reference.ref )
 	{
 		this.addScope( name, LIMITED );
@@ -366,7 +377,7 @@ Lemuria.prototype.addSchema = function addSchema( name, schema ){
 };
 
 Lemuria.prototype.addScope = function addScope( property, type ){
-	if( typeof type == STRING &&
+	if( protype( type, STRING ) &&
 		type != PUBLIC &&
 		type != LIMITED &&
 		type != HIDDEN &&
@@ -380,7 +391,7 @@ Lemuria.prototype.addScope = function addScope( property, type ){
 		return this;
 	}
 
-	if( typeof property != STRING ){
+	if( !protype( property, STRING ) ){
 		Fatal( "invalid property", property, type, this );
 
 		return this;
@@ -392,13 +403,13 @@ Lemuria.prototype.addScope = function addScope( property, type ){
 };
 
 Lemuria.prototype.addFactor = function addFactor( property ){
-	if( typeof property != STRING ){
+	if( !protype( property, STRING ) ){
 		Fatal( "invalid property", property, this );
 
 		return this;
 	}
 
-	if( property in this.factor ){
+	if( kein( this.factor, property ) ){
 		return this;
 	}
 
@@ -447,7 +458,7 @@ Lemuria.prototype.buildSchema = function buildSchema( option ){
 				this.tag = [ this.name, this.code ];
 			}
 
-			if( self.engine && typeof self.engine == FUNCTION ){
+			if( self.engine && protype( self.engine, FUNCTION ) ){
 				let option = { };
 				option[ self.label ] = this.toObject( );
 
@@ -541,12 +552,12 @@ Lemuria.prototype.restrict = function restrict( data ){
 	@end-method-documentation
 */
 Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
-	if( !( this.schema instanceof mongoose.Schema ) ){
+	if( !( clazof( this.schema, mongoose.Schema ) ) ){
 		throw new Error( "schema not instantiated" );
 	}
 
 	let result = undefined;
-	if( typeof initialize == FUNCTION ){
+	if( protype( initialize, FUNCTION ) ){
 		result = initialize.call( this, plugin );
 	}
 
@@ -556,7 +567,7 @@ Lemuria.prototype.addPlugin = function addPlugin( plugin, initialize ){
 };
 
 Lemuria.prototype.attachHook = function attachHook( hook ){
-	if( typeof hook != FUNCTION ){
+	if( !protype( hook, FUNCTION ) ){
 		throw new Error( "invalid hook function" );
 	}
 
@@ -571,7 +582,7 @@ Lemuria.prototype.attachHook = function attachHook( hook ){
 	@end-method-documentation
 */
 Lemuria.prototype.procedure = function procedure( method ){
-	if( typeof method == FUNCTION ){
+	if( protype( method, FUNCTION ) ){
 		try{
 			method.call( this );
 
@@ -593,7 +604,7 @@ Lemuria.prototype.procedure = function procedure( method ){
 Lemuria.prototype.connect = function connect( databaseURL ){
 	let databaseName = databaseURL.match( /\/([a-z][a-zA-Z0-9_\-]+)$/ )[ 1 ];
 
-	if( databaseName in Lemuria.database ){
+	if( kein( Lemuria.database, databaseName ) ){
 		this.database = Lemuria.database[ databaseName ];
 
 	}else{
@@ -602,7 +613,7 @@ Lemuria.prototype.connect = function connect( databaseURL ){
 		harden( databaseName, this.database, Lemuria.database );
 	}
 
-	if( databaseName in Lemuria.client ){
+	if( kein( Lemuria.client, databaseName ) ){
 		this.client = Lemuria.client[ databaseName ];
 
 	}else{
@@ -631,12 +642,12 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 		databaseURL = `mongodb://${ database.host }:${ database.port }/${ database.name }`;
 	}
 
-	if( !databaseURL ){
+	if( falzy( databaseURL ) ){
 		throw new Error( "cannot extract database url" );
 	}
 
 	let databaseName = database.name;
-	if( databaseName in Lemuria.database ){
+	if( kein( Lemuria.database, databaseName ) ){
 		this.database = Lemuria.database[ databaseName ];
 
 	}else{
@@ -645,7 +656,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 		harden( databaseName, this.database, Lemuria.database );
 	}
 
-	if( databaseName in Lemuria.client ){
+	if( kein( Lemuria.client, databaseName ) ){
 		this.client = Lemuria.client[ databaseName ];
 
 	}else{
@@ -658,7 +669,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 };
 
 Lemuria.prototype.buildModel = function buildModel( ){
-	if( !( this.schema instanceof mongoose.Schema ) ){
+	if( !( clazof( this.schema, mongoose.Schema ) ) ){
 		throw new Error( "schema not instantiated" );
 	}
 
@@ -704,14 +715,14 @@ Lemuria.prototype.attachEngine = function attachEngine( engine ){
 		engine = optfor( arguments, OBJECT ) || undefined;
 	}
 
-	var rootEngine = engine.rootEngine;
+	let rootEngine = engine.rootEngine;
 	if( engine &&
 		engine.rootEngine )
 	{
 		engine = engine.rootEngine.constructor;
 
-	}else if( typeof engine == OBJECT &&
-		typeof engine.constructor == FUNCTION &&
+	}else if( protype( engine, OBJECT ) &&
+		protype( engine.constructor, FUNCTION ) &&
 		( engine.rootEngine ||
 			engine.constructor.rootEngine ||
 			engine.constructor.prototype.rootEngine ) )
@@ -724,8 +735,8 @@ Lemuria.prototype.attachEngine = function attachEngine( engine ){
 		engine = optfor( arguments, FUNCTION ) || undefined;
 	}
 
-	if( typeof engine == FUNCTION &&
-		rootEngine instanceof engine )
+	if( protype( engine, FUNCTION ) &&
+		clazof( rootEngine, engine ) )
 	{
 		this.engine = engine;
 		this.rootEngine = rootEngine;
