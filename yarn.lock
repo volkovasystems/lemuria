@@ -15,8 +15,8 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
 ansi-regex@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.0.0.tgz#c5061b6e0ef8a81775e50f5d66151bf6bf371107"
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
 
 ansi-styles@^2.2.1:
   version "2.2.1"
@@ -94,7 +94,7 @@ browser-fingerprint@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/browser-fingerprint/-/browser-fingerprint-0.0.1.tgz#8df3cdca25bf7d5b3542d61545d730053fce604a"
 
-bson@~1.0.1, bson@~1.0.4:
+bson@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.4.tgz#93c10d39eaa5b58415cbc4052f3e53e562b0b72c"
 
@@ -475,6 +475,14 @@ kein@^0.2.0:
     falzy "^0.7.0"
     protype "^0.8.0"
 
+kein@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/kein/-/kein-0.5.0.tgz#959e59a7444f9f447652af403d05560416be5a69"
+  dependencies:
+    babel-runtime "^6.20.0"
+    falzy "^0.7.0"
+    protype "^0.8.0"
+
 kind-of@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.1.0.tgz#475d698a5e49ff5e53d14e3e732429dc8bf4cf47"
@@ -579,45 +587,30 @@ moment@^2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
-mongodb-core@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.2.tgz#a11db773d34819cbeb97751241827137ab535aab"
-  dependencies:
-    bson "~1.0.1"
-    require_optional "~1.0.0"
-
-mongodb-core@2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.5.tgz#bad12e90d5e1a895214e9bc3375ea3a1cd539ec0"
+mongodb-core@2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.6.tgz#9d179e7487767c58993bb7c8d6685d035c346a42"
   dependencies:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
-mongodb@2.2.16:
-  version "2.2.16"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.16.tgz#e32ba91cf9e29f371fb38ba0c4a71c3b1f5fae77"
+mongodb@2.2.21, mongodb@^2.2.21:
+  version "2.2.21"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.21.tgz#f7ee56489600e0ac8024c062c0857ac04ddb5f48"
   dependencies:
     es6-promise "3.2.1"
-    mongodb-core "2.1.2"
+    mongodb-core "2.1.6"
     readable-stream "2.1.5"
 
-mongodb@^2.2.20:
-  version "2.2.20"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.20.tgz#a6a00d33222874e0efe9eb598ebe8dbfeccf01d4"
-  dependencies:
-    es6-promise "3.2.1"
-    mongodb-core "2.1.5"
-    readable-stream "2.1.5"
-
-mongoose@^4.7.6:
-  version "4.7.6"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.7.6.tgz#704cc710efb98b74aeb8a3386d073c835498bd46"
+mongoose@^4.7.7:
+  version "4.7.7"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.7.7.tgz#45118baa56c0595c924e52288d23559f98a741de"
   dependencies:
     async "2.1.4"
-    bson "~1.0.1"
+    bson "~1.0.4"
     hooks-fixed "1.2.0"
     kareem "1.2.0"
-    mongodb "2.2.16"
+    mongodb "2.2.21"
     mpath "0.2.1"
     mpromise "0.5.5"
     mquery "2.0.0"
