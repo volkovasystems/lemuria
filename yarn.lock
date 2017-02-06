@@ -882,6 +882,12 @@ longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
 
+longjohn@^0.2.12:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/longjohn/-/longjohn-0.2.12.tgz#7ca7446b083655c377e7512213dc754d52a64a7e"
+  dependencies:
+    source-map-support "0.3.2 - 1.0.0"
+
 meek@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/meek/-/meek-0.6.0.tgz#4fa9cafeb0818155916ecd44dd4bbe1a2b6e2038"
@@ -986,9 +992,9 @@ offcache@^0.4.0:
     falze "^0.5.0"
     protype "^0.11.0"
 
-olivant@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/olivant/-/olivant-0.12.0.tgz#6b2ad391b3852a6ab281af45bf9b1907364d4518"
+olivant@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/olivant/-/olivant-0.13.0.tgz#9638630cba41c5a4b05ef9be7cbf4bbc4c7aebc3"
   dependencies:
     arid "^0.7.0"
     asea "^0.8.0"
@@ -1009,10 +1015,11 @@ olivant@^0.12.0:
     harden "^0.14.0"
     heredito "^0.17.0"
     kein "^0.8.0"
+    longjohn "^0.2.12"
     meek "^0.6.0"
     outre "^0.8.0"
     plough "^0.9.0"
-    protype "^0.11.0"
+    protype "^0.14.0"
     raze "^0.12.0"
     redsea "^0.5.0"
     segway "^0.9.0"
@@ -1120,6 +1127,14 @@ proplist@^0.6.0:
 protype@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/protype/-/protype-0.11.0.tgz#52b1a68d774d83bc4a9c0671d5e392b246fb4a3d"
+  dependencies:
+    babel-runtime "^6.22.0"
+    cemento "^0.7.0"
+    harden "^0.14.0"
+
+protype@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/protype/-/protype-0.14.0.tgz#fc572851c7b5096942ce9b1fdad18d5a72e520b5"
   dependencies:
     babel-runtime "^6.22.0"
     cemento "^0.7.0"
@@ -1342,13 +1357,19 @@ snapd@^0.9.0:
     protype "^0.8.0"
     zelf "^0.4.0"
 
+"source-map-support@0.3.2 - 1.0.0":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.11.tgz#647f939978b38535909530885303daf23279f322"
+  dependencies:
+    source-map "^0.5.3"
+
 source-map@^0.4.4:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.4.4.tgz#eba4f5da9c0dc999de68032d8b4f76173652036b"
   dependencies:
     amdefine ">=0.0.4"
 
-source-map@~0.5.1:
+source-map@^0.5.3, source-map@~0.5.1:
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
 
