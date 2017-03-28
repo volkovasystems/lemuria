@@ -409,7 +409,7 @@ Lemuria.prototype.addFactor = function addFactor( property ){
 		return this;
 	}
 
-	if( kein( this.factor, property ) ){
+	if( kein( property, this.factor ) ){
 		return this;
 	}
 
@@ -604,7 +604,7 @@ Lemuria.prototype.procedure = function procedure( method ){
 Lemuria.prototype.connect = function connect( databaseURL ){
 	let databaseName = databaseURL.match( /\/([a-z][a-zA-Z0-9_\-]+)$/ )[ 1 ];
 
-	if( kein( Lemuria.database, databaseName ) ){
+	if( kein( databaseName, Lemuria.database ) ){
 		this.database = Lemuria.database[ databaseName ];
 
 	}else{
@@ -613,7 +613,7 @@ Lemuria.prototype.connect = function connect( databaseURL ){
 		harden( databaseName, this.database, Lemuria.database );
 	}
 
-	if( kein( Lemuria.client, databaseName ) ){
+	if( kein( databaseName, Lemuria.client ) ){
 		this.client = Lemuria.client[ databaseName ];
 
 	}else{
@@ -647,7 +647,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 	}
 
 	let databaseName = database.name;
-	if( kein( Lemuria.database, databaseName ) ){
+	if( kein( databaseName, Lemuria.database ) ){
 		this.database = Lemuria.database[ databaseName ];
 
 	}else{
@@ -656,7 +656,7 @@ Lemuria.prototype.bindDatabase = function bindDatabase( database ){
 		harden( databaseName, this.database, Lemuria.database );
 	}
 
-	if( kein( Lemuria.client, databaseName ) ){
+	if( kein( databaseName, Lemuria.client ) ){
 		this.client = Lemuria.client[ databaseName ];
 
 	}else{
