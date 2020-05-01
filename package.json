@@ -4,7 +4,9 @@
   "description": "Standard default model.",
   "main": "lemuria.js",
   "scripts": {
-    "test": "mocha lemuria-test.js"
+    "test": "mocha lemuria-test.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -43,6 +45,8 @@
     "protype": "^0.21.0",
     "shardize": "^0.13.0",
     "titlelize": "^0.13.0",
-    "u200b": "^0.19.0"
-  }
+    "u200b": "^0.19.0",
+    "snyk": "^1.316.1"
+  },
+  "snyk": true
 }
